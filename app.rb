@@ -19,6 +19,7 @@ class App
 
   def run
     while true
+      begin
       puts "Begin routine at #{DateTime.now}"
       @hashtags.split(' ').each do |hashtag|
         puts "Retweeting #{hashtag}"
@@ -33,6 +34,10 @@ class App
       end
 
       sleep(@wait_time)
+      rescue Twitter::Error::TooManyRequests
+        puts "I have mad too many requests to twitter. I will sleep for some time"
+        sleep(@wait_time * 4)
+      end
     end
   end
 
