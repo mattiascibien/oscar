@@ -28,7 +28,7 @@ class App
       end
 
       # Mentions
-      @client.mentions_timeline.each do |mention|
+      @client.mentions_timeline.take(5).each do |mention|
         try_retweet(mention)
       end
 
