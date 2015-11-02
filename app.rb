@@ -12,7 +12,7 @@ class App
       config.access_token_secret = ENV['TWITTER_ACCESS_SECRET']
     end
 
-    @wait_time = 5 * 60
+    @wait_time = 10 * 60
 
     @hashtags = '#daz3dart #3drenderbot #3dmodeling #3danimation #3drendering'
   end
@@ -25,12 +25,11 @@ class App
         @client.search("#{hashtag} -rt", lang: "en").take(5).each do |object|
           try_retweet(object)
         end
+      end
 
-        # Mentions
-        @client.mentions_timeline.each do |mention|
-          try_retweet(mention)
-        end
-
+      # Mentions
+      @client.mentions_timeline.each do |mention|
+        try_retweet(mention)
       end
 
       sleep(@wait_time)
