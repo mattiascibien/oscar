@@ -23,18 +23,28 @@ class App
       @hashtags.split(' ').each do |hashtag|
         puts "Retweeting #{hashtag}"
         @client.search("#{hashtag} -rt", lang: "en").take(5).each do |object|
-          begin
-            case object
-              when Twitter::Tweet
-                @client.retweet object unless @client.retweets(object.id, options = {}).count > 0
-            end
-          rescue Twitter::Error::Forbidden
-            $stderr.print "IO failed: " + $!
-          end
+          try_retweet(object)
         end
+
+        # Mentions
+        @client.mentions_timeline.each do |mention|
+          try_retweet(mention)
+        end
+
       end
 
       sleep(@wait_time)
+    end
+  end
+
+  def try_retweet(object)
+    begin
+      case object
+        when Twitter::Tweet
+          @client.retweet object unless @client.retweets(object.id, options = {}).count > 0
+      end
+    rescue Twitter::Error::Forbidden
+      $stderr.print "Something has failed " + $!
     end
   end
 end
